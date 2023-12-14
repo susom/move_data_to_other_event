@@ -72,8 +72,9 @@ class ExternalModule extends AbstractExternalModule {
         ];
 
         $field_list = ($fields) ? " AND d.field_name IN ('" . implode('\',\'', $fields) . "');" : ";";
+        $data_table = method_exists('\REDCap', 'getDataTable') ? \REDCap::getDataTable($project_id) : "redcap_data";
         $edocs_sql = "SELECT d.field_name, em.doc_id, em.stored_name, em.doc_name
-            FROM redcap_data d
+            FROM $data_table d
         INNER JOIN redcap_metadata m
             ON
             m.project_id = d.project_id
@@ -168,7 +169,9 @@ class ExternalModule extends AbstractExternalModule {
              // explicitly excluding the record's primary key
              $revisit_fields = implode(',', $revisit_fields);
              $log_message .= ". Forced transfer of additional field(s): " . $revisit_fields;
-             $docs_xfer_sql = "UPDATE redcap_data SET event_id = " . $target_event_id . "
+              $data_table = method_exists('\REDCap', 'getDataTable') ? \REDCap::getDataTable($project_id) : "redcap_data";
+
+             $docs_xfer_sql = "UPDATE $data_table SET event_id = " . $target_event_id . "
                  WHERE project_id = " . $project_id . "
                  AND event_id = " . $source_event_id . "
                  AND record = '" . $record_id . "'
