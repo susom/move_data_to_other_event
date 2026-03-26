@@ -18,7 +18,7 @@ class ExternalModule extends AbstractExternalModule {
         if ( !defined('USERID') ) return;
 
 
-
+        // if survey user then skip this functionality.
         if (USERID == '[survey respondent]' ||  !$this->framework->getUser()->hasDesignRights() &&
                 ( $this->getSystemSetting('restrict_to_designers_global') ||
                   !$project_settings['allow_non_designers']) )
